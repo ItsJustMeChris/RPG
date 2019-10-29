@@ -1,20 +1,28 @@
 export default class Map {
     chunks = [];
-    scale = 5;
+    scale = 10;
 
     constructor(game, seed) {
         this.context = game.context;
-        noise.seed(1234);
+        noise.seed(1235);
         this.generateChunk();
+        this.draw();
     }
 
     generateChunk() {
-        for (let x = 0; x < window.innerWidth; x+=this.scale) {
-            for (let y = 0; y < window.innerHeight; y+=this.scale) {
-                let elevation1 = noise.perlin2(x / (this.scale * 15), y / (this.scale * 15));
-                let elevation2 = noise.perlin2(x / (this.scale * 25), y / (this.scale * 25));
-                let elevation3 = noise.perlin2(x / (this.scale * 35), y / (this.scale * 35));
-                let elevation = ((elevation1 * 0.1337) + (elevation2)) / 2
+        this.chunks = [];
+        let z = 1;
+        for (let x = -(window.innerWidth / 2); x < window.innerWidth / 2; x += this.scale) {
+            for (let y = -(window.innerHeight / 2); y < window.innerHeight / 2; y += this.scale) {
+                // noise layers
+                let nx = x;
+                let ny = y;
+                let nz = 1;
+                let elevation1 = noise.perlin3(nx / (this.scale * 15), ny / (this.scale * 15), nz);
+                let elevation2 = noise.perlin3(nx / (this.scale * 25), ny / (this.scale * 25), nz);
+                let elevation3 = noise.perlin3(nx / (this.scale * 35), ny / (this.scale * 35), nz);
+                // layer stacking
+                let elevation = ((elevation1 * 0.1337) + (elevation2)) / 1.5
                 this.chunks.push({ x, y, elevation });
             }
         }
@@ -24,7 +32,7 @@ export default class Map {
         this.chunks.forEach(chunk => {
             let elevation = Math.abs(chunk.elevation) * 512;
             let color = '#00ff00';
-            if(elevation <= 20) {
+            if (elevation <= 20) {
                 color = '#123540';
             } else if (elevation <= 75) {
                 color = '#403412';
