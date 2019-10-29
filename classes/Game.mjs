@@ -1,10 +1,11 @@
 import Map from "./Map.mjs";
+import Player from './Player.mjs';
 
 export default class Game {
   constructor(canvas_selector, seed = 1234) {
     this.init_canvas(canvas_selector);
-    this.map = new Map(this, seed);
-//    this.entity_set = new EntitySet(this);
+    this.player = new Player(this);
+    this.map = new Map(this, seed, this.player);
     this.draw()
   }
 
@@ -13,9 +14,9 @@ export default class Game {
     this.canvas.width = window.innerWidth
     this.canvas.height = window.innerHeight
     this.context = this.canvas.getContext('2d');
-    this.context.translate(this.canvas.width / 2, this.canvas.height /2);
+    this.context.translate(this.canvas.width / 2, this.canvas.height / 2);
   }
-  
+
   tick() {
     this.map.tick()
     this.entity_set.tick()
@@ -23,6 +24,7 @@ export default class Game {
 
   draw() {
     this.map.draw()
+    this.player.draw()
     //this.entity_set.draw()
   }
 }
