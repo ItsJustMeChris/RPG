@@ -1,12 +1,16 @@
 import Map from "./Map.mjs";
 import Player from './Player.mjs';
+import EntityList from "./EntityList.mjs";
 
 export default class Game {
+  drawInterval;
   constructor(canvas_selector, seed = 1234) {
     this.init_canvas(canvas_selector);
     this.player = new Player(this);
     this.map = new Map(this, seed, this.player);
-    this.draw()
+    this.entityList = new EntityList;
+    this.entityList.register(this.player);
+    requestAnimationFrame(() => this.tick());
   }
 
   init_canvas(canvas_selector) {
@@ -18,14 +22,22 @@ export default class Game {
   }
 
   tick() {
+    // tick game state
     this.map.tick()
-    this.entity_set.tick()
+    //this.entity_set.tick()
+    // draw game state
+    this.draw();
+    requestAnimationFrame(() => this.tick());
+  }
+
+  clear_canvas() {
+    this.context.clearRect(-this.canvas.width / 2, -this.canvas.height / 2, this.canvas.width, this.canvas.height);
   }
 
   draw() {
-    this.map.draw()
-    this.player.draw()
-    //this.entity_set.draw()
+    this.clear_canvas()
+    this.map.draw();
+    this.entityList.draw();
   }
 }
 

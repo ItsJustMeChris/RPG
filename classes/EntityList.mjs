@@ -1,10 +1,21 @@
-export default class EntitySet {
-    constructor(game) {
-    }
+export default class EntityList {
+  entities = [];
+  constructor(game) {
+  }
 
-    generateChunk() {
-    }
+  register(entity) {
+    this.entities.push(entity);
+  }
 
-    draw() {
-    }
+  draw() {
+    this.entities.forEach(entity => {
+      entity.draw();
+    });
+  }
+
+  tick() {
+    this.entities.forEach(entity => {
+      entity.tick();
+    });
+  }
 }
